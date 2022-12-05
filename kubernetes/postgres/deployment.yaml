@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webinar-postgres
+  name: webinar-postgres
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: webinar-postgres
+  template:
+    metadata:
+      labels:
+        app: webinar-postgres
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_USER
+          value: user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-password
+              key: password
+        image: postgres:latest
+        imagePullPolicy: Always
+        startupProbe:
+          tcpSocket:
+            port: jdbc
+          initialDelaySeconds: 10
+          failureThreshold: 10
+        name: postgres
+        ports:
+        - containerPort: 5432
+          name: jdbc
+          protocol: TCP
+        resources:
+          limits:
+            memory: 400Mi
+            cpu: 500m
+          requests:
+            memory: 400Mi
+            cpu: 100m
+        securityContext:
+          privileged: false

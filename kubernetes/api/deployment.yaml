@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webinar-api
+  name: webinar-api
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: webinar-api
+  template:
+    metadata:
+      labels:
+        app: webinar-api
+    spec:
+      containers:
+      - env:
+        - name: API_MESSAGE_URL
+          value: http://webinar-db:8080
+        image: ghcr.io/drsylent/webinar/api:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          tcpSocket:
+            port: http
+        readinessProbe:
+          tcpSocket:
+            port: http
+        startupProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          failureThreshold: 10
+        name: application
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8081
+          name: management
+          protocol: TCP
+        resources:
+          limits:
+            memory: 400Mi
+            cpu: 500m
+          requests:
+            memory: 400Mi
+            cpu: 100m
+        securityContext:
+          privileged: false

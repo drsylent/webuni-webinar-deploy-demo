@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webinar-db
+  name: webinar-db
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: webinar-db
+  template:
+    metadata:
+      labels:
+        app: webinar-db
+    spec:
+      containers:
+      - env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://webinar-postgres:5432/postgres
+        - name: SPRING_DATASOURCE_USERNAME
+          value: user
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-password
+              key: password
+        image: ghcr.io/drsylent/webinar/db:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          tcpSocket:
+            port: http
+        readinessProbe:
+          tcpSocket:
+            port: http
+        startupProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          failureThreshold: 10
+        name: application
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8081
+          name: management
+          protocol: TCP
+        resources:
+          limits:
+            memory: 400Mi
+            cpu: 500m
+          requests:
+            memory: 400Mi
+            cpu: 100m
+        securityContext:
+          privileged: false
