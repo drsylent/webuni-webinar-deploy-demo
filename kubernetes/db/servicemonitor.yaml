@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: webinar-db
+  labels:
+    app: webinar-db
+spec:
+  selector:
+    matchLabels:
+      app: webinar-db
+  endpoints:
+  - port: management
+    path: /actuator/prometheus
+    scheme: http
