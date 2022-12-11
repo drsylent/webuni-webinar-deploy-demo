@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     app: webinar-postgres
+    release: webinar
   name: webinar-postgres
 spec:
   ports:

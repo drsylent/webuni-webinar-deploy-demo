@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     app: webinar-db
+    release: webinar
   name: webinar-db
 spec:
   ports:

@@ -4,6 +4,7 @@ metadata:
   name: webinar-db
   labels:
     app: webinar-db
+    release: webinar
 spec:
   selector:
     matchLabels:

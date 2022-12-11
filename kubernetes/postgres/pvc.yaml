@@ -1,6 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  labels:
+    app: webinar-postgres
+    release: webinar
   name: postgres-persistent-claim
 spec:
   accessModes:
